@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Calculator & Equation Solver</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <h1 class="logo">⚡ CALC PRO</h1>
+            <div class="nav-buttons">
+                <button class="nav-btn active" data-tab="calculator">Calculator</button>
+                <button class="nav-btn" data-tab="graph">Graph</button>
+                <button class="nav-btn" data-tab="solver">Solver</button>
+            </div>
+        </nav>
+
+        <!-- Calculator Tab -->
+        <div class="tab-content active" id="calculator">
+            <div class="calculator-wrapper">
+                <div class="display-container">
+                    <div class="display" id="displayValue">0</div>
+                </div>
+
+                <div class="buttons-grid">
+                    <button class="btn func-btn" onclick="appendFunction('sin')">sin</button>
+                    <button class="btn func-btn" onclick="appendFunction('cos')">cos</button>
+                    <button class="btn func-btn" onclick="appendFunction('tan')">tan</button>
+                    <button class="btn func-btn" onclick="appendFunction('sqrt')">√</button>
+                    <button class="btn clear-btn" onclick="clearDisplay()">C</button>
+
+                    <button class="btn func-btn" onclick="appendFunction('log')">log</button>
+                    <button class="btn func-btn" onclick="appendFunction('exp')">e^x</button>
+                    <button class="btn func-btn" onclick="appendFunction('pi')">π</button>
+                    <button class="btn func-btn" onclick="appendFunction('e')">e</button>
+                    <button class="btn clear-btn" onclick="backspace()">⌫</button>
+
+                    <button class="btn" onclick="appendNumber(7)">7</button>
+                    <button class="btn" onclick="appendNumber(8)">8</button>
+                    <button class="btn" onclick="appendNumber(9)">9</button>
+                    <button class="btn" onclick="appendNumber('/')">÷</button>
+                    <button class="btn" onclick="appendNumber('(')">(</button>
+
+                    <button class="btn" onclick="appendNumber(4)">4</button>
+                    <button class="btn" onclick="appendNumber(5)">5</button>
+                    <button class="btn" onclick="appendNumber(6)">6</button>
+                    <button class="btn" onclick="appendNumber('*')">×</button>
+                    <button class="btn" onclick="appendNumber(')')">) </button>
+
+                    <button class="btn" onclick="appendNumber(1)">1</button>
+                    <button class="btn" onclick="appendNumber(2)">2</button>
+                    <button class="btn" onclick="appendNumber(3)">3</button>
+                    <button class="btn" onclick="appendNumber('-')">-</button>
+                    <button class="btn" onclick="appendNumber('**)">x^y</button>
+
+                    <button class="btn" onclick="appendNumber(0)">0</button>
+                    <button class="btn" onclick="appendNumber('.')">.</button>
+                    <button class="btn" onclick="appendNumber('1/')">1/x</button>
+                    <button class="btn" onclick="appendNumber('+')">+</button>
+                    <button class="btn equals-btn" onclick="calculate()">=</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graph Tab -->
+        <div class="tab-content" id="graph">
+            <div class="graph-wrapper">
+                <div class="graph-controls">
+                    <div class="control-group">
+                        <label>Expression (use x or y as variable)</label>
+                        <input type="text" id="graphExpr" placeholder="e.g., sin(x), x**2 + y**2" value="sin(x)">
+                    </div>
+
+                    <div class="control-row">
+                        <div class="control-group">
+                            <label>Variable 1</label>
+                            <input type="text" id="var1" value="x">
+                        </div>
+                        <div class="control-group">
+                            <label>Variable 2</label>
+                            <input type="text" id="var2" value="y">
+                        </div>
+                    </div>
+
+                    <div class="control-row">
+                        <div class="control-group">
+                            <label>From</label>
+                            <input type="number" id="graphStart" value="-10">
+                        </div>
+                        <div class="control-group">
+                            <label>To</label>
+                            <input type="number" id="graphEnd" value="10">
+                        </div>
+                    </div>
+
+                    <div class="control-row">
+                        <button class="btn-primary" onclick="plotGraph()">Plot 2D</button>
+                        <button class="btn-primary" onclick="plot3D()">Plot 3D</button>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div id="chartContainer" class="chart-box"></div>
+                    <div id="chart3dContainer" class="chart-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Solver Tab -->
+        <div class="tab-content" id="solver">
+            <div class="solver-wrapper">
+                <div class="solver-container">
+                    <h2>Equation Solver (up to 3 variables)</h2>
+                    
+                    <div class="solver-grid">
+                        <div class="solver-section">
+                            <h3>Single Variable</h3>
+                            <div class="control-group">
+                                <label>Equation (e.g., x**2 - 4 = 0)</label>
+                                <input type="text" id="eqExpr" placeholder="x**2 - 4" value="x**2 - 4">
+                            </div>
+                            <div class="control-group">
+                                <label>Variable</label>
+                                <input type="text" id="eqVar" value="x">
+                            </div>
+                            <div class="control-group">
+                                <label>Initial Guess</label>
+                                <input type="number" id="eqGuess" value="1">
+                            </div>
+                            <button class="btn-primary" onclick="solveEquation()">Solve</button>
+                            <div class="result-box" id="solverResult"></div>
+                        </div>
+
+                        <div class="solver-section">
+                            <h3>System Solver</h3>
+                            <p class="info-text">Enter up to 3 equations (one per line)</p>
+                            <textarea id="systemEqs" placeholder="x + y - 2&#10;x - y" rows="4"></textarea>
+                            <div class="control-group">
+                                <label>Variables (comma separated)</label>
+                                <input type="text" id="sysVars" value="x,y">
+                            </div>
+                            <button class="btn-primary" onclick="solveSystem()">Solve System</button>
+                            <div class="result-box" id="systemResult"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/js/script.js"></script>
+</body>
+</html>
